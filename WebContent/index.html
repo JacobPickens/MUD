@@ -3,11 +3,149 @@
 <head>
 <meta charset="UTF-8">
 <title>Test</title>
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 </head>
 <body>
 
-<h1>1</h1>
-<h2>Test Branch</h2>
+	<div id="register_state" style="display:none">
+		<center>
+			<h2>Register</h2>
+			Username:
+			<input type="text" id="username-box"></input>
+			<br />
+			Password:
+			<input type="text" id="password-box"></input>
+			<br/>
+			Re-type Password:
+			<input type="text" id="retype-box"></input>
+			<br />
+			<button id="register-submit">Register</button>
+			<br />
+			<br />
+			<a id="back-to-login">Back to login</a>
+		</center>
+	</div>
+	
+	<div id="login_state" style="display:none">
+		<center>
+			<h2>Login</h2>
+			Username:
+			<input type="text" id="username-box"></input>
+			<br />
+			Password:
+			<input type="text" id="password-box"></input>
+			<br />
+			<button id="login-submit">Login</button>
+			<br />
+			<br />
+			<a id="register-account">Click me to register!</a>
+		</center>
+	</div>
+	
+	<div id="lobby_state" style="display:none">
+		<center>
+			<h2 id="username-title"></h2>
+			<input type="text" id="join-code-box"></input>
+			<button id="join-game-button">Join Game</button>
+			<br />
+			or
+			<br />
+			<button id="create-game-button">Create Game</button>
+		</center>
+	</div>
+	
+	<script>
+		var REGISTER_STATE = 0;
+		var LOGIN_STATE = 1;
+		var LOBBY_STATE = 2;
+		
+		var states = [];
+		var currentState = LOGIN_STATE;
+		
+		var currentUsername = "";
+		var currentUserID = null;
+		
+		function registerState(stateID, cssID) { // stateID should be a unique ID int for the state, cssID is a string that is the actual CSS ID of the state
+			var state = {id:stateID, cssID:cssID};
+			states.push(state);
+		}
+		
+		function enterState(stateID) {
+			currentState = stateID;
+			for(var i = 0; i < states.length; i++) {
+				if(states[i].id == stateID) {
+					$(document).find("#" + states[i].cssID).css("display","block");
+				} else {
+					$(document).find("#" + states[i].cssID).css("display","none");
+				}
+			}
+		}
+		
+		registerState(REGISTER_STATE, "register_state");
+		registerState(LOGIN_STATE, "login_state");
+		registerState(LOBBY_STATE, "lobby_state");
+		
+		$(document).ready(function() {
+			enterState(LOGIN_STATE);
+			
+			// Register State Code
+			$(document).find("#register-submit").click(function() {
+				var username = $("#register_state").find("#username-box").val();
+				var password = $("#register_state").find("#password-box").val();
+				var retype = $("#register_state").find("#retype-box").val();
+				
+				$("#register_state").find("#username-box").val("");
+				$("#register_state").find("#password-box").val("");
+				$("#register_state").find("#retype-box").val("");
+				
+				if(password == retype) {
+					$.post("backend/register_account.php", {username:username, password:password}, function(data, status) {
+						if(data == 'exists') {
+							console.log("Account already exists");
+						} else if(data == '0') {
+							enterState(LOGIN_STATE);
+						} else {
+							console.log("Check connection");
+						}
+					});
+				} else {
+					console.log("passwords do not match");
+				}
+			});
+			
+			$(document).find("#back-to-login").click(function() {
+				enterState(LOGIN_STATE);
+			});
+			
+			// Login State Code
+			$(document).find("#login-submit").click(function() {
+				var username = $("#login_state").find("#username-box").val();
+				var password = $("#login_state").find("#password-box").val();
+				
+				$("#login_state").find("#username-box").val("");
+				$("#login_state").find("#password-box").val("");
+				
+				$.post("backend/login_account.php", {username:username, password:password}, function(data, status) {
+					if(data == "failed") {
+						console.log("Username/Password is incorrect");
+					} else {
+						currentUsername = username;
+						currentUserID = data;
+						
+						$("#lobby_state").find("#username-title").text("Welcome, " + currentUsername + "!");
+						
+						enterState(LOBBY_STATE);
+					}
+				});
+			});
+			
+			$(document).find("#register-account").click(function() {
+				enterState(REGISTER_STATE);
+			});
+		});
+	
+	</script>
 
 </body>
 </html>
