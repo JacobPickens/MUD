@@ -3,7 +3,7 @@
 $host = "localhost";
 $database = "id3595091_games";
 $user = "id3595091_games";
-$password = "12hotnj";
+$password = file_get_contents("res.txt");
 
 $conn = mysqli_connect($host, $user, $password, $database);
 

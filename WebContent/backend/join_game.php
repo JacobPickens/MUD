@@ -5,7 +5,7 @@ $accountsDatabase = "id3595091_accounts";
 $gamesDatabase = "id3595091_games";
 $accountsUser = "id3595091_accounts";
 $gamesUser = "id3595091_games";
-$password = "12hotnj";
+$password = file_get_contents("res.txt");
 
 $accountsConn = mysqli_connect($host, $accountsUser, $password, $accountsDatabase);
 
