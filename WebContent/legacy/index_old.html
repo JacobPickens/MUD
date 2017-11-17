@@ -3,16 +3,15 @@
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	
 	<title>MUD</title>
-	<link rel="icon" href="favicon.ico" />
 	<link rel="stylesheet" type="text/css" href="stylesheet.css">
-	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script><style></style><style></style>
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script><style></style>
 </head>
 <body>
 	<div id="top_bar">
 		<div id="links">
 			<a href="https://m-u-d.000webhostapp.com/#" class="top_bar_item">Help</a>
 			<a href="https://m-u-d.000webhostapp.com/#" class="top_bar_item">Contact</a>
-			<a href="https://m-u-d.000webhostapp.com/#" class="top_bar_item" id="logout-button" style="">Logout</a>
+			<a href="https://m-u-d.000webhostapp.com/#" class="top_bar_item" id="logout-button" style="display: none">Logout</a>
 		</div>
 		<div id="title">MUD</div>
 	</div>
@@ -33,7 +32,7 @@
 		</center>
 	</div>
 	
-	<div id="login_state" style="display: none;" class="network_item">
+	<div id="login_state" style="display: block;" class="network_item">
 		<center>
 			<h2>Login</h2>
 			<input type="text" id="username-box" class="network_input" placeholder="Username">
@@ -47,12 +46,14 @@
 		</center>
 	</div>
 	
-	<div id="lobby_state" style="display: block;" class="network_item">
+	<div id="lobby_state" style="display:none" class="network_item">
 		<center>
-			<h2 id="username-title">Welcome, Q_jay!</h2>
-			<input type="text" id="join-code-box" placeholder="Enter Game Code">
+			<h2 id="username-title"></h2>
+			<input type="text" id="join-code-box">
 			<button id="join-game-button">Join Game</button>
-			<br/>
+			<br>
+			or
+			<br>
 			<button id="create-game-button">Create Game</button>
 		</center>
 	</div>
@@ -198,7 +199,7 @@
 						// currentUserID
 						// currentUsername
 						// currentGameID
-
+					
 						localStorage.setItem("userToken", currentUserID);
 						localStorage.setItem("gameID", currentGameID);
 						localStorage.setItem("username", currentUsername);
@@ -347,7 +348,6 @@
 		});
 	
 	</script>
-
 
 
 

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<!-- saved from url=(0032)https://m-u-d.000webhostapp.com/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>MUD</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css">
+<link rel="icon" href="favicon.ico" />
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+</head>
+<body>
+
+	<div id="top_bar">
+		<div id="links">
+			<a href="https://m-u-d.000webhostapp.com/#" class="top_bar_item">Help</a>
+			<a href="https://m-u-d.000webhostapp.com/#" class="top_bar_item">Contact</a>
+			<a href="https://m-u-d.000webhostapp.com/#" class="top_bar_item" id="logout-button" style="display: none">Logout</a>
+		</div>
+		<div id="title">MUD</div>
+	</div>
+
+	<div id="chat_box">
+	</div>
+
+	<div id="info">
+		<div id="map"><canvas width="300" height="300" id="mapDisplay">
+		</canvas></div>
+		<div id="inventory">INVENTORY</div>
+	</div>
+	
+	<input type=text id="user_input" placeholder="Enter a command. Type /help for help." autofocus></input>
+
+	<script>
+		var token = localStorage.getItem("userToken");
+		var gameID = localStorage.getItem("gameID");
+		var username = localStorage.getItem("username");
+
+		var chatRefresher = null;
+		
+		var addedChats = [];
+
+		var canvas = document.getElementById("mapDisplay");
+		var drawContext = canvas.getContext("2d");
+
+		drawContext.fillStyle = "#111111";
+		drawContext.fillRect(0, 0, 300, 300);
+
+		$.post("backend/get_map.php", {gameIndex:gameID}, function(data, status) {
+			var mapObject = JSON.parse(data);
+			for (var j in mapObject.locations) {
+				console.log(mapObject.locations[j].type);
+				if (mapObject.locations[j].type === "forest") {
+					drawTriangle(mapObject.locations[j].x * 20, mapObject.locations[j].y * 20, 16);
+				}
+				if (mapObject.locations[j].type === "cave") {
+					drawContext.fillStyle = "white";
+					drawContext.fillRect(mapObject.locations[j].x * 20, mapObject.locations[j].y * 20, 16, 16);
+				}
+				if (mapObject.locations[j].type === "town") {
+					drawCircle(mapObject.locations[j].x * 20, mapObject.locations[j].y * 20, 8);
+				}
+				drawContext.fillStyle = "#ffffff";
+				drawContext.font = "12px Arial";
+				drawContext.fillText("(" + mapObject.locations[j].id + ") " + mapObject.locations[j].name, (mapObject.locations[j].x * 20) - mapObject.locations[j].name.length * 2, (mapObject.locations[j].y * 20) + 28);
+			}
+		});
+
+		function drawCircle(x, y, radius) {
+			drawContext.beginPath();
+			drawContext.arc(x + radius, y + radius, radius, 0, 2*Math.PI, false);
+			drawContext.fillStyle = "white";
+			drawContext.fill();
+		}
+
+		function drawTriangle(x, y, base) {
+			drawContext.beginPath();
+    		drawContext.moveTo(base * 2 + x, y);
+    		drawContext.lineTo(base + x,base + y);
+    		drawContext.lineTo(base*3 + x,base + y);
+    		drawContext.fillStyle = "white";
+    		drawContext.fill();
+		}
+		
+		$(document).ready(function() {
+			$("#user_input").keypress(function( e ) {
+				if(e.keyCode === 13 && $("#user_input").val() !== "") {
+					$.post("backend/send_chat.php", {gameIndex:gameID, username:username, chat:$("#user_input").val()}, function(data, status) {
+						console.log(status);
+						$("#user_input").val("");
+					});
+				}
+			});
+
+			chatRefresher = setInterval(function() {
+				$.post("backend/refresh_chat.php", {gameIndex:gameID}, function(data, status) {
+					var chatObject = JSON.parse(data);
+					for (var i in chatObject.chats) {
+						added = false;
+						for(var j in addedChats) {
+							if(chatObject.chats[i].id == addedChats[j]) {
+								added = true;
+							}
+						}
+						if(!added) {
+							if(chatObject.chats[i].username == username) {
+								$("#chat_box").append("<strong style=\"color: #bf2224;\">" + chatObject.chats[i].username + "</strong>: " + chatObject.chats[i].chat +  "<br/>");
+							} else {
+								$("#chat_box").append("<strong>" + chatObject.chats[i].username + "</strong>: " + chatObject.chats[i].chat +  "<br/>");
+							}
+							var chatbox = document.getElementById("chat_box");
+							chatbox.scrollTop = chatbox.scrollHeight;
+							addedChats.push(chatObject.chats[i].id);
+						}
+					}
+				});
+			}, 500);
+		});
+		
+	</script>
+</body></html>
