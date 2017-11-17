@@ -293,32 +293,52 @@
 					}
 				});
 			}
+
+			var illegalCharacters = [' ', '\\', '\'', '\"'];
 			
 			function register() {
 				var username = $("#register_state").find("#username-box").val();
 				var password = $("#register_state").find("#password-box").val();
 				var retype = $("#register_state").find("#retype-box").val();
+
+				var containsIllegalCharacters = false;
 				
-				if(username != "" && password != "" && retype != "") {
-					if(password == retype) {
-						$("#register_state").find("#username-box").val("");
-						$("#register_state").find("#password-box").val("");
-						$("#register_state").find("#retype-box").val("");
-						
-						$.post("backend/register_account.php", {username:username, password:password}, function(data, status) {
-							if(data == 'exists') {
-								alert("This username already exists.");
-							} else if(data == '0') {
-								enterState(LOGIN_STATE);
-							} else {
-								alert("Check connection.");
-							}
-						});
+				for(var i = 0; i < illegalCharacters.length; i++) {
+					if(username.match(illegalCharacters[i]) > 0) {
+						containsIllegalCharacters = true;
+						break;
+					}
+
+					if(password.match(illegalCharacters[i]) > 0) {
+						containsIllegalCharacters = true;
+						break;
+					}
+				}
+
+				if(containsIllegalCharacters != true) {	
+					if(username != "" && password != "" && retype != "") {
+						if(password == retype) {
+							$("#register_state").find("#username-box").val("");
+							$("#register_state").find("#password-box").val("");
+							$("#register_state").find("#retype-box").val("");
+							
+							$.post("backend/register_account.php", {username:username, password:password}, function(data, status) {
+								if(data == 'exists') {
+									alert("This username already exists.");
+								} else if(data == '0') {
+									enterState(LOGIN_STATE);
+								} else {
+									alert("Check connection.");
+								}
+							});
+						} else {
+							alert("Passswords do not match.");
+						}
 					} else {
-						alert("Passswords do not match.");
+						alert("Please make sure all the boxes are full.");
 					}
 				} else {
-					alert("Please make sure all the boxes are full.");
+					alert("Your username or password contains illegal characters. Make sure it doesn't contain spaces or any of the following: \\, \', \"");
 				}
 			}
 			
