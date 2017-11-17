@@ -5,6 +5,7 @@
 }
 html {
     background: #0c0c0c;
+    overflow-y: hidden;
 }
 
 #top_bar {
