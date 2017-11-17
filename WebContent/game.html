@@ -3,7 +3,7 @@
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>MUD</title>
 <link rel="stylesheet" type="text/css" href="stylesheet.css">
-<link rel="icon" href="favicon.png"/>
+<link rel="icon" href="favicon.ico" />
 <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -40,11 +40,13 @@
 		var canvas = document.getElementById("mapDisplay");
 		var drawContext = canvas.getContext("2d");
 
+		var mapObject = "";
+
 		drawContext.fillStyle = "#111111";
 		drawContext.fillRect(0, 0, 300, 300);
 
 		$.post("backend/get_map.php", {gameIndex:gameID}, function(data, status) {
-			var mapObject = JSON.parse(data);
+			mapObject = JSON.parse(data);
 			for (var j in mapObject.locations) {
 				console.log(mapObject.locations[j].type);
 				if (mapObject.locations[j].type === "forest") {
@@ -82,10 +84,19 @@
 		$(document).ready(function() {
 			$("#user_input").keypress(function( e ) {
 				if(e.keyCode === 13 && $("#user_input").val() !== "") {
-					$.post("backend/send_chat.php", {gameIndex:gameID, username:username, chat:$("#user_input").val()}, function(data, status) {
-						console.log(status);
-						$("#user_input").val("");
-					});
+					if ($("#user_input").val().startsWith("/")) {
+						if ($("#user_input").val().startsWith("/travel")) {
+							$.post("backend/player_travel.php", {id:token, gameIndex:gameID, locationId:$("#user_input").val().split(" ")[1]}, function(data, status) {
+								// Do whatever
+								$("#user_input").val("");
+							});
+						}
+					} else {
+						$.post("backend/send_chat.php", {gameIndex:gameID, username:username, chat:$("#user_input").val()}, function(data, status) {
+							console.log(status);
+							$("#user_input").val("");
+						});
+					}
 				}
 			});
 
@@ -108,6 +119,28 @@
 							var chatbox = document.getElementById("chat_box");
 							chatbox.scrollTop = chatbox.scrollHeight;
 							addedChats.push(chatObject.chats[i].id);
+						}
+					}
+				});
+			}, 500);
+
+			playerRefresher = setInterval(function() {
+				$.post("backend/refresh_players.php", {gameIndex:gameID}, function(data, status) {
+					var playersObject = JSON.parse(data);
+					for (var k in playersObject.players) {
+						if (playerObject.players[k].username == username) {
+							drawContext.fillStyle = "red";
+						} else {
+							drawContext.fillStyle = "blue";
+						}
+
+						for (var l in mapObject.locations) {
+							if (playerObject.players[k].location === mapObject.locations[l].id) {
+								drawContext.fillRect(mapObject.locations[l].x, mapObject.locations[l].y, 16, 16);
+								drawContext.fillStyle = "#ffffff";
+								drawContext.font = "12px Arial";
+								drawContext.fillText(playerObject.players[k].username, (mapObject.locations[j].x * 20) - playerObject.players[k].username.length * 2, (mapObject.locations[j].y * 20) + 28);
+							}
 						}
 					}
 				});
