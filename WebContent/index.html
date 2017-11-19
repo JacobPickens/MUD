@@ -12,7 +12,7 @@
 		<div id="links">
 			<a href="https://m-u-d.000webhostapp.com/#" class="top_bar_item">Help</a>
 			<a href="https://m-u-d.000webhostapp.com/#" class="top_bar_item">Contact</a>
-			<a href="https://m-u-d.000webhostapp.com/#" class="top_bar_item" id="logout-button" style="">Logout</a>
+			<a href="https://m-u-d.000webhostapp.com/#" class="top_bar_item" id="logout-button" style="display: none">Logout</a>
 		</div>
 		<div id="title">MUD</div>
 	</div>
@@ -49,7 +49,7 @@
 	
 	<div id="lobby_state" style="display: block;" class="network_item">
 		<center>
-			<h2 id="username-title">Welcome, Q_jay!</h2>
+			<h2 id="username-title">Welcome</h2>
 			<input type="text" id="join-code-box" placeholder="Enter Game Code">
 			<button id="join-game-button">Join Game</button>
 			<br/>
@@ -110,6 +110,20 @@
 			}
 		}
 		
+		function loadAccount() {
+			currentUserID = localStorage.getItem("userToken");
+			currentUsername = localStorage.getItem("username");
+			localStorage.removeItem("gameID");
+			
+			if(currentUserID != null || currentUsername != null) {
+				console.log(currentUsername);
+				enterState(LOBBY_STATE);
+				$(document).find("#logout-button").show();
+			}
+			
+			$("#lobby_state").find("#username-title").text("Welcome, " + currentUsername + "!");
+		}
+		
 		registerState(REGISTER_STATE, "register_state");
 		registerState(LOGIN_STATE, "login_state");
 		registerState(LOBBY_STATE, "lobby_state");
@@ -117,6 +131,8 @@
 		
 		$(document).ready(function() {
 			enterState(LOGIN_STATE);
+			
+			loadAccount();
 			
 			// Register State Code
 			$(document).find("#register-submit").click(function() {
@@ -190,21 +206,9 @@
 					if(data == "nothost") {
 						alert("You're not the host of the game. Close developer tools, bro.");
 					} else {
-						window.clearInterval(pregameRefresher); // keep this here tho
-						// Enter the game
-						// John this is your domain dude
-						
-						// List of variables to pass on to the game:
-						// currentUserID
-						// currentUsername
-						// currentGameID
+						window.clearInterval(pregameRefresher);
 
-						localStorage.setItem("userToken", currentUserID);
-						localStorage.setItem("gameID", currentGameID);
-						localStorage.setItem("username", currentUsername);
-						window.location.replace("game.html");						
-
-
+						gameStart();
 					}
 				});
 			});
@@ -214,6 +218,11 @@
 				currentUserID = null;
 				currentUsername = "";
 				$(document).find("#logout-button").hide();
+				
+				localStorage.removeItem("userToken");
+				localStorage.removeItem("gameID");
+				localStorage.removeItem("username");
+				
 				enterState(LOGIN_STATE);
 			});
 			
@@ -229,10 +238,7 @@
 						alert("This game was deleted by the host.");
 					} else {
 						if(info.status == 2) { // Game started
-							localStorage.setItem("userToken", currentUserID);
-							localStorage.setItem("gameID", currentGameID);
-							localStorage.setItem("username", currentUsername);
-							window.location.replace("game.html");	
+							gameStart();	
 						} else {
 							$("#pregame_state").find(".joined-player-item").remove();
 							
@@ -356,6 +362,9 @@
 						currentUsername = username;
 						currentUserID = data;
 						
+						localStorage.setItem("userToken", currentUserID);
+						localStorage.setItem("username", currentUsername);
+						
 						$(document).find("#logout-button").show();
 						
 						$("#lobby_state").find("#username-title").text("Welcome, " + currentUsername + "!");
@@ -363,6 +372,13 @@
 						enterState(LOBBY_STATE);
 					}
 				});
+			}
+			
+			function gameStart() {
+				localStorage.setItem("userToken", currentUserID);
+				localStorage.setItem("gameID", currentGameID);
+				localStorage.setItem("username", currentUsername);
+				window.location.replace("game.html");
 			}
 		});
 	

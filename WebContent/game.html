@@ -12,7 +12,7 @@
 		<div id="links">
 			<a href="https://m-u-d.000webhostapp.com/#" class="top_bar_item">Help</a>
 			<a href="https://m-u-d.000webhostapp.com/#" class="top_bar_item">Contact</a>
-			<a href="https://m-u-d.000webhostapp.com/#" class="top_bar_item" id="logout-button" style="display: none">Logout</a>
+			<a href="https://m-u-d.000webhostapp.com/#" class="top_bar_item" id="leave-game-button">Leave Game</a>
 		</div>
 		<div id="title">MUD</div>
 	</div>
@@ -22,17 +22,23 @@
 
 	<div id="info">
 		<div id="map"><canvas width="300" height="300" id="mapDisplay">
-		</canvas></div>
+		</canvas>
+		<button id="toggle_map">Local Map</button>
+		</div>
 		<div id="inventory">INVENTORY</div>
 	</div>
 	
 	<input type=text id="user_input" placeholder="Enter a command. Type /help for help." autofocus></input>
 
 	<script>
-		var token = localStorage.getItem("userToken");
-		var gameID = localStorage.getItem("gameID");
-		var username = localStorage.getItem("username");
-		var currentLocation = 0;
+		//var token = localStorage.getItem("userToken");
+		//var gameID = localStorage.getItem("gameID");
+		//var username = localStorage.getItem("username");
+		
+		var token = 20;
+		var gameID = 15;
+		var username = "Jacob_Pickens";
+		var currentLocation = 7;
 
 		var chatRefresher = null;
 		var playerRefresher = null;
@@ -45,6 +51,11 @@
 
 		var mapObject = null;
 		var playerObject = null;
+		
+		var GLOBAL = 0;
+		var LOCAL = 1;
+		
+		var currentMap = GLOBAL;
 
 		drawContext.fillStyle = "#111111";
 		drawContext.fillRect(0, 0, 300, 300);
@@ -53,29 +64,59 @@
 			mapObject = JSON.parse(data);
 		});
 		
+		window.onbeforeunload = function() {
+			//localStorage.removeItem("gameID");
+			//$.post("backend/leave_game.php", {id:token, gameIndex:gameID}, function(data, status) {
+			//	clearInterval(chatRefresher);
+			//	clearInterval(playerRefresher);
+			//	clearInterval(drawRefresher);
+			//});
+			return '';
+		};
+		
 		function render() {
 			drawContext.clearRect(0, 0, 300, 300);
 			
-			if(mapObject != null && playerObject != null) {
-				for (var j in mapObject.locations) {
-					if(currentLocation == mapObject.locations[j].id) {
-						drawContext.fillStyle = "red";
-					} else {
-						drawContext.fillStyle = "white";
+			if(currentMap == GLOBAL) { // Global Map
+				if(mapObject != null && playerObject != null) {
+					for (var j in mapObject.locations) {
+						if(currentLocation == mapObject.locations[j].id) {
+							drawContext.fillStyle = "red";
+						} else {
+							drawContext.fillStyle = "white";
+						}
+						
+						if (mapObject.locations[j].type === "forest") {
+							drawTriangle(mapObject.locations[j].x * 20, mapObject.locations[j].y * 20, 16);
+						}
+						if (mapObject.locations[j].type === "cave") {
+							drawContext.fillRect(mapObject.locations[j].x * 20, mapObject.locations[j].y * 20, 16, 16);
+						}
+						if (mapObject.locations[j].type === "town") {
+							drawCircle(mapObject.locations[j].x * 20, mapObject.locations[j].y * 20, 8);
+						}
+						drawContext.fillStyle = "#ffffff";
+						drawContext.font = "12px Arial";
+						drawContext.fillText("(" + mapObject.locations[j].id + ") " + mapObject.locations[j].name, (mapObject.locations[j].x * 20) - mapObject.locations[j].name.length * 2, (mapObject.locations[j].y * 20) + 28);
 					}
-					
-					if (mapObject.locations[j].type === "forest") {
-						drawTriangle(mapObject.locations[j].x * 20, mapObject.locations[j].y * 20, 16);
+				}
+			} else { // Local Map
+				if(mapObject != null && playerObject != null) {
+					for (var j in mapObject.locations) {
+						if(mapObject.locations[j].id == currentLocation) {
+							var sublocation = JSON.parse(mapObject.locations[j].sublocationJSON);
+							
+							var multiplier = (canvas.width/sublocation.sublocations.length)-8;
+							
+							for(var i = 0; i < sublocation.sublocations.length; i++) {
+								drawContext.fillStyle = "#ffffff";
+								drawContext.fillRect(i * multiplier, (canvas.height/2)-8, 16, 16);
+								drawContext.fillStyle = "#ffffff";
+								drawContext.font = "12px Arial";
+								drawContext.fillText(sublocation.sublocations[i].type, i * multiplier, (canvas.height/2)+28);
+							}
+						}
 					}
-					if (mapObject.locations[j].type === "cave") {
-						drawContext.fillRect(mapObject.locations[j].x * 20, mapObject.locations[j].y * 20, 16, 16);
-					}
-					if (mapObject.locations[j].type === "town") {
-						drawCircle(mapObject.locations[j].x * 20, mapObject.locations[j].y * 20, 8);
-					}
-					drawContext.fillStyle = "#ffffff";
-					drawContext.font = "12px Arial";
-					drawContext.fillText("(" + mapObject.locations[j].id + ") " + mapObject.locations[j].name, (mapObject.locations[j].x * 20) - mapObject.locations[j].name.length * 2, (mapObject.locations[j].y * 20) + 28);
 				}
 			}
 		}
@@ -138,6 +179,26 @@
 					}
 				}
 			});
+			
+			$(document).find("#toggle_map").click(function() {
+				if(currentMap == GLOBAL) {
+					currentMap = LOCAL;
+					$(document).find("#toggle_map").text("Global Map");
+				} else {
+					currentMap = GLOBAL;
+					$(document).find("#toggle_map").text("Local Map");
+				}
+				render();
+			});
+			
+			$(document).find("#leave-game-button").click(function() {
+				$.post("backend/leave_game.php", {id:token, gameIndex:gameID}, function(data, status) {
+					clearInterval(chatRefresher);
+					clearInterval(playerRefresher);
+					clearInterval(drawRefresher);
+					window.location.replace("index.html");
+				});
+			});
 
 			chatRefresher = setInterval(function() {
 				$.post("backend/refresh_chat.php", {gameIndex:gameID}, function(data, status) {
@@ -150,11 +211,11 @@
 							}
 						}
 						if(!added) {
-							if(chatObject.chats[i].recipient == username.toLowerCase()) {
+							if((chatObject.chats[i].recipient == username.toLowerCase() || chatObject.chats[i].username == username) && chatObject.chats[i].recipient != "*") {
 								$("#chat_box").append("<i style=\"color: #cc00cc;\">" + chatObject.chats[i].username + ": " + chatObject.chats[i].chat +  "</i><br/>");
 							} else if(chatObject.chats[i].username == username) {
 								$("#chat_box").append("<strong style=\"color: #bf2224;\">" + chatObject.chats[i].username + "</strong>: " + chatObject.chats[i].chat +  "<br/>");
-							} else {
+							} else if(chatObject.chats[i].recipient == "*") {
 								$("#chat_box").append("<strong>" + chatObject.chats[i].username + "</strong>: " + chatObject.chats[i].chat +  "<br/>");
 							}
 							var chatbox = document.getElementById("chat_box");
