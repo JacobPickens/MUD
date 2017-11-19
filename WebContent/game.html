@@ -100,7 +100,8 @@
 			$("#user_input").keypress(function( e ) {
 				if(e.keyCode === 13 && $("#user_input").val() !== "") {
 					if ($("#user_input").val().startsWith("/")) {
-						if ($("#user_input").val().startsWith("/travel")) {
+						// Travel Script
+						if ($("#user_input").val().toLowerCase().startsWith("/travel")) {
 							$.post("backend/player_travel.php", {id:token, gameIndex:gameID, locationId:$("#user_input").val().split(" ")[1]}, function(data, status) {
 								if(data != "notvalid") {
 									$("#user_input").val("");
@@ -109,9 +110,29 @@
 								}
 							});
 						}
+						
+						// Whisper Script
+						if ($("#user_input").val().startsWith("/whisper")) {
+							var command = $("#user_input").val().toLowerCase().replace("/whisper", "").trim();
+							var commandArray = command.split(" ");
+							var whisperArray = $("#user_input").val().split(" ");
+							
+							var recipient = commandArray[0];
+							
+							var whisper = "";
+								
+							for(var i = 2; i < whisperArray.length; i++) {
+								whisper = whisper + " " + whisperArray[i];
+							}
+							
+							whisper = whisper.trim();
+							
+							$.post("backend/send_chat.php", {gameIndex:gameID, username:username, recipient:recipient, chat:whisper}, function(data, status) {
+								$("#user_input").val("");
+							});
+						}
 					} else {
-						$.post("backend/send_chat.php", {gameIndex:gameID, username:username, chat:$("#user_input").val()}, function(data, status) {
-							console.log(status);
+						$.post("backend/send_chat.php", {gameIndex:gameID, username:username, recipient:"*", chat:$("#user_input").val()}, function(data, status) {
 							$("#user_input").val("");
 						});
 					}
@@ -129,7 +150,9 @@
 							}
 						}
 						if(!added) {
-							if(chatObject.chats[i].username == username) {
+							if(chatObject.chats[i].recipient == username.toLowerCase()) {
+								$("#chat_box").append("<i style=\"color: #cc00cc;\">" + chatObject.chats[i].username + ": " + chatObject.chats[i].chat +  "</i><br/>");
+							} else if(chatObject.chats[i].username == username) {
 								$("#chat_box").append("<strong style=\"color: #bf2224;\">" + chatObject.chats[i].username + "</strong>: " + chatObject.chats[i].chat +  "<br/>");
 							} else {
 								$("#chat_box").append("<strong>" + chatObject.chats[i].username + "</strong>: " + chatObject.chats[i].chat +  "<br/>");

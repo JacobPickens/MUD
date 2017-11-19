@@ -21,8 +21,9 @@ if(mysqli_num_rows($results) > 0) {
 	while($row = mysqli_fetch_assoc($results)) {
 		$id = $row['id'];
 		$username = $row['username'];
+		$recipient = $row['recipient'];
 		$chat = $row['chat'];
-		$json = $json . "{\"id\":$id, \"username\":\"$username\", \"chat\":\"$chat\"},";
+		$json = $json . "{\"id\":$id, \"username\":\"$username\", \"recipient\":\"$recipient\", \"chat\":\"$chat\"},";
 	}
 	echo rtrim($json,',') . "]}";
 }

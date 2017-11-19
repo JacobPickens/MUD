@@ -13,11 +13,12 @@ if(!$conn) {
 
 $gameIndex = $_POST['gameIndex'];
 $username = $_POST['username'];
+$recipient = mysqli_real_escape_string($conn, $_POST['recipient']);
 $chat = mysqli_real_escape_string($conn, $_POST['chat']);
 
 // Eventually we should check to see if the player is actually in the game
 
-$query = "INSERT INTO chat$gameIndex(username, chat) VALUES(\"$username\", \"$chat\")";
+$query = "INSERT INTO chat$gameIndex(username, recipient, chat) VALUES(\"$username\", \"$recipient\", \"$chat\")";
 mysqli_query($conn, $query);
 
 mysqli_close($conn);
