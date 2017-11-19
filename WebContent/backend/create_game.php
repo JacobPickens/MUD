@@ -34,7 +34,7 @@ if(mysqli_num_rows($results) > 0) {
 }
 
 // Create game tables
-$query = "CREATE TABLE game$currentGameIndex (id bigint(20), username varchar(256));";
+$query = "CREATE TABLE game$currentGameIndex (id bigint(20), username varchar(256), location int);";
 if(!mysqli_query($gamesConn, $query)) {
 	echo "Error: " . mysqli_error($gamesConn);
 }
@@ -48,6 +48,7 @@ mysqli_query($gamesConn, $query);
 $query = 	"CREATE TABLE chat$currentGameIndex (" .
 			"id int NOT NULL AUTO_INCREMENT," .
 			"username varchar(256)," .
+			"recipient text," . 
 			"chat text," .
 			"PRIMARY KEY (id)" .
 			");";
@@ -83,8 +84,10 @@ while($row = mysqli_fetch_assoc($results)) {
 	$hostUsername = $row['username'];
 }
 
-$query = "INSERT INTO game$currentGameIndex(id, username) VALUES($hostID, \"$hostUsername\")";
-mysqli_query($gamesConn, $query);
+$query = "INSERT INTO game$currentGameIndex(id, username, location) VALUES($hostID, \"$hostUsername\", 0)";
+if(!mysqli_query($gamesConn, $query)) {
+	echo mysqli_error($gamesConn);
+}
 
 $query = "INSERT INTO global$currentGameIndex(name, value) VALUES(\"host\", $hostID); INSERT INTO global$currentGameIndex(name, value) VALUES(\"mapSize\", 3)";
 mysqli_query($gamesConn, $query);
