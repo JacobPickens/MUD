@@ -31,13 +31,9 @@
 	<input type=text id="user_input" placeholder="Enter a command. Type /help for help." autofocus></input>
 
 	<script>
-		//var token = localStorage.getItem("userToken");
-		//var gameID = localStorage.getItem("gameID");
-		//var username = localStorage.getItem("username");
-		
-		var token = 20;
-		var gameID = 15;
-		var username = "Jacob_Pickens";
+		var token = localStorage.getItem("userToken");
+		var gameID = localStorage.getItem("gameID");
+		var username = localStorage.getItem("username");
 		var currentLocation = 7;
 
 		var chatRefresher = null;
@@ -57,6 +53,8 @@
 		
 		var currentMap = GLOBAL;
 
+		var lastRecipient = "";
+
 		drawContext.fillStyle = "#111111";
 		drawContext.fillRect(0, 0, 300, 300);
 
@@ -65,12 +63,12 @@
 		});
 		
 		window.onbeforeunload = function() {
-			//localStorage.removeItem("gameID");
-			//$.post("backend/leave_game.php", {id:token, gameIndex:gameID}, function(data, status) {
-			//	clearInterval(chatRefresher);
-			//	clearInterval(playerRefresher);
-			//	clearInterval(drawRefresher);
-			//});
+			localStorage.removeItem("gameID");
+			$.post("backend/leave_game.php", {id:token, gameIndex:gameID}, function(data, status) {
+				clearInterval(chatRefresher);
+				clearInterval(playerRefresher);
+				clearInterval(drawRefresher);
+			});
 			return '';
 		};
 		
@@ -169,8 +167,27 @@
 							whisper = whisper.trim();
 							
 							$.post("backend/send_chat.php", {gameIndex:gameID, username:username, recipient:recipient, chat:whisper}, function(data, status) {
+								lastRecipient = recipient;
 								$("#user_input").val("");
 							});
+						}
+
+						if ($("#user_input").val().startsWith("/r")) {
+							var command = $("#user_input").val().toLowerCase().replace("/whisper", "").trim();
+							var commandArray = command.split(" ");
+							var whisperArray = $("#user_input").val().split(" ");
+							var whisper = "";
+								
+							for(var i = 1; i < whisperArray.length; i++) {
+								whisper = whisper + " " + whisperArray[i];
+							}
+							
+							whisper = whisper.trim();
+
+							$.post("backend/send_chat.php", {gameIndex:gameID, username:username, recipient:lastRecipient, chat:whisper}, function(data, status) {
+								$("#user_input").val("");
+							});
+
 						}
 					} else {
 						$.post("backend/send_chat.php", {gameIndex:gameID, username:username, recipient:"*", chat:$("#user_input").val()}, function(data, status) {
