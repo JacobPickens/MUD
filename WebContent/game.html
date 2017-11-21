@@ -26,15 +26,21 @@
 		</canvas>
 		<button id="toggle_map">Local Map</button>
 		</div>
-		<div id="inventory">INVENTORY</div>
+		<div id="inventory">INVENTORY<br />
+		<ul id="inventory_list"></ul>
+		</div>
 	</div>
 	
 	<input type=text id="user_input" placeholder="Enter a command. Type /help for help." autofocus></input>
 
 	<script>
-		var token = localStorage.getItem("userToken");
-		var gameID = localStorage.getItem("gameID");
-		var username = localStorage.getItem("username");
+		//var token = localStorage.getItem("userToken");
+		//var gameID = localStorage.getItem("gameID");
+		//var username = localStorage.getItem("username");
+
+		var token = 20;
+		var gameID = 51;
+		var username = "Jacob_Pickens";
 		var currentLocation = 1;
 
 		var chatRefresher = null;
@@ -49,6 +55,7 @@
 
 		var mapObject = null;
 		var playerObject = null;
+		var inventoryObject = null;
 		
 		var GLOBAL = 0;
 		var LOCAL = 1;
@@ -65,12 +72,12 @@
 		});
 		
 		window.onbeforeunload = function() {
-			localStorage.removeItem("gameID");
-			$.post("backend/leave_game.php", {id:token, gameIndex:gameID}, function(data, status) {
-				clearInterval(chatRefresher);
-				clearInterval(playerRefresher);
-				clearInterval(drawRefresher);
-			});
+			//localStorage.removeItem("gameID");
+			//$.post("backend/leave_game.php", {id:token, gameIndex:gameID}, function(data, status) {
+			//	clearInterval(chatRefresher);
+			//	clearInterval(playerRefresher);
+			//	clearInterval(drawRefresher);
+			//});
 			return '';
 		};
 		
@@ -136,6 +143,8 @@
 		}
 		
 		$(document).ready(function() {
+			getInventory();
+			
 			drawRefresher = setInterval(function() { render(); }, 500);
 			
 			$("#user_input").keypress(function( e ) {
@@ -149,6 +158,31 @@
 									playerListReset();
 								} else { // Location doesn't exist
 									alert("This location does not exist.");
+								}
+							});
+						}
+
+						// Search Script
+						if ($("#user_input").val().toLowerCase().startsWith("/search")) {
+							var sublocation = $("#user_input").val().replace("/search", "").trim();
+							$.post("backend/search_sublocation.php", {id:token, gameIndex:gameID, location:currentLocation, sublocation:sublocation}, function(data, status) {
+								switch(data) {
+								case "invalidglobal":
+									alert("Invalid Global Location");
+									break;
+								case "invalidlocal":
+									alert("Invalid Local Location");
+									break;
+								case "invalidplayer":
+									alert("Invalid Player ID");
+									break;
+								case "invaliditem":
+									alert("Invalid Item");
+									break;
+								default:
+									alert(data);
+									getInventory();
+									break;
 								}
 							});
 						}
@@ -275,6 +309,18 @@
 			function playerListReset() {
 				$(document).find("#players_list").text("Who else is here: ");
 				addedPlayers = [];
+			}
+
+			function getInventory() {
+				inventoryObject = null;
+				$(document).find(".inventory_item").remove();
+				$.post("backend/get_inventory.php", {id:token, gameIndex:gameID}, function(data, status) {
+					inventoryObject = JSON.parse(data);
+					for(var i = 0; i < inventoryObject.inventory.length; i++) {
+						console.log(inventoryObject.inventory[i].name);
+						$(document).find("#inventory_list").append("<li class=\"inventory_item\"><img src=\"" + inventoryObject.inventory[i].image.replace("@","/") + "\" alt=\"" + inventoryObject.inventory[i].name + "\"/></li>");
+					}
+				});
 			}
 		});
 		
