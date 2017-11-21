@@ -113,7 +113,7 @@
 								drawContext.fillRect(i * multiplier, (canvas.height/2)-8, 16, 16);
 								drawContext.fillStyle = "#ffffff";
 								drawContext.font = "12px Arial";
-								drawContext.fillText(sublocation.sublocations[i].type, i * multiplier, (canvas.height/2)+28);
+								drawContext.fillText("(" + sublocation.sublocations[i].id + ") " + sublocation.sublocations[i].type, i * multiplier, (canvas.height/2)+28);
 							}
 						}
 					}

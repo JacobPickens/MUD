@@ -80,7 +80,8 @@ if($hostId == $playerId) {
 		
 		$json = "{\\\"sublocations\\\":[";
 		for($ii = 0; $ii < $numberOfSublocations; $ii++) {
-			$json = $json . "{\\\"type\\\":\\\"$sublocations[$ii]\\\"},";
+			$index = $ii+1;
+			$json = $json . "{\\\"id\\\":$index, \\\"type\\\":\\\"$sublocations[$ii]\\\"},";
 		}
 		$json = rtrim($json,',') . "]}";
 		
