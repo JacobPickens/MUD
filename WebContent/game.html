@@ -21,6 +21,7 @@
 	</div>
 
 	<div id="info">
+		<p id="players_list">Who else is here: </p>
 		<div id="map"><canvas width="300" height="300" id="mapDisplay">
 		</canvas>
 		<button id="toggle_map">Local Map</button>
@@ -34,13 +35,14 @@
 		var token = localStorage.getItem("userToken");
 		var gameID = localStorage.getItem("gameID");
 		var username = localStorage.getItem("username");
-		var currentLocation = 7;
+		var currentLocation = 1;
 
 		var chatRefresher = null;
 		var playerRefresher = null;
 		var drawRefresher = null;
 		
 		var addedChats = [];
+		var addedPlayers = [];
 
 		var canvas = document.getElementById("mapDisplay");
 		var drawContext = canvas.getContext("2d");
@@ -144,6 +146,7 @@
 							$.post("backend/player_travel.php", {id:token, gameIndex:gameID, locationId:$("#user_input").val().split(" ")[1]}, function(data, status) {
 								if(data != "notvalid") {
 									$("#user_input").val("");
+									playerListReset();
 								} else { // Location doesn't exist
 									alert("This location does not exist.");
 								}
@@ -246,13 +249,33 @@
 			playerRefresher = setInterval(function() {
 				$.post("backend/refresh_players.php", {gameIndex:gameID}, function(data, status) {
 					playerObject = JSON.parse(data);
+					playerListReset();
 					for (var k in playerObject.players) {
 						if (playerObject.players[k].id == token) {
 							currentLocation = playerObject.players[k].location;
 						}
+						
+						if(playerObject.players[k].location == currentLocation && playerObject.players[k].id != token) {
+							var added = false;
+							for(var i = 0; i < addedPlayers.length; i++) {
+								if(playerObject.players[k].id == addedPlayers[i]) {
+									added = true;
+									break;
+								}
+							}
+							if(!added) {
+								$(document).find("#players_list").text($(document).find("#players_list").text() + playerObject.players[k].username + ", ");
+								addedPlayers.push(playerObject.players[k].id);
+							}														
+						}
 					}
 				});
 			}, 500);
+			
+			function playerListReset() {
+				$(document).find("#players_list").text("Who else is here: ");
+				addedPlayers = [];
+			}
 		});
 		
 	</script>
