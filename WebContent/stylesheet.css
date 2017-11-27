@@ -194,3 +194,12 @@ button {
 	width: 10px;
 	height: 10px;
 }
+
+.inventory_item {
+    width: 40px;
+    height: 40px;
+    border: 3px solid gray;
+    background: #1b1b1b;
+    color: white;
+    display: inline;
+}
