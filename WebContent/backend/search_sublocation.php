@@ -11,10 +11,10 @@ if(!$conn) {
 	die("Connection failed: " + mysqli_connect_error());
 }
 
-$playerId = $_GET['id'];
-$gameIndex = $_GET['gameIndex'];
-$location = $_GET['location'];
-$sublocation = $_GET['sublocation'];
+$playerId = $_POST['id'];
+$gameIndex = $_POST['gameIndex'];
+$location = $_POST['location'];
+$sublocation = $_POST['sublocation'];
 
 $query = "SELECT * FROM map$gameIndex WHERE id=$location";
 $results = mysqli_query($conn, $query) or die("Error: " . mysqli_error());
