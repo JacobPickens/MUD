@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Lato:700');
+ @import url('https://fonts.googleapis.com/css?family=Lato:700');
 
 * {
     margin: 0px auto;
@@ -188,18 +188,4 @@ button {
 }
 ::-webkit-scrollbar-thumb:hover {
     background: #1b1b1b;
-}
-
-.item-image {
-	width: 10px;
-	height: 10px;
-}
-
-.inventory_item {
-    width: 40px;
-    height: 40px;
-    border: 3px solid gray;
-    background: #1b1b1b;
-    color: white;
-    display: inline;
 }
