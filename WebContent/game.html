@@ -37,22 +37,18 @@
 		//var token = localStorage.getItem("userToken");
 		//var gameID = localStorage.getItem("gameID");
 		//var username = localStorage.getItem("username");
-
 		var token = 20;
 		var gameID = 51;
 		var username = "Jacob_Pickens";
 		var currentLocation = 1;
-
 		var chatRefresher = null;
 		var playerRefresher = null;
 		var drawRefresher = null;
 		
 		var addedChats = [];
 		var addedPlayers = [];
-
 		var canvas = document.getElementById("mapDisplay");
 		var drawContext = canvas.getContext("2d");
-
 		var mapObject = null;
 		var playerObject = null;
 		var inventoryObject = null;
@@ -61,12 +57,9 @@
 		var LOCAL = 1;
 		
 		var currentMap = GLOBAL;
-
 		var lastRecipient = "";
-
 		drawContext.fillStyle = "#111111";
 		drawContext.fillRect(0, 0, 300, 300);
-
 		$.post("backend/get_map.php", {gameIndex:gameID}, function(data, status) {
 			mapObject = JSON.parse(data);
 		});
@@ -127,13 +120,11 @@
 				}
 			}
 		}
-
 		function drawCircle(x, y, radius) {
 			drawContext.beginPath();
 			drawContext.arc(x + radius, y + radius, radius, 0, 2*Math.PI, false);
 			drawContext.fill();
 		}
-
 		function drawTriangle(x, y, base) {
 			drawContext.beginPath();
     		drawContext.moveTo(base * 2 + x, y);
@@ -161,7 +152,6 @@
 								}
 							});
 						}
-
 						// Search Script
 						if ($("#user_input").val().toLowerCase().startsWith("/search")) {
 							var sublocation = $("#user_input").val().replace("/search", "").trim();
@@ -208,7 +198,6 @@
 								$("#user_input").val("");
 							});
 						}
-
 						if ($("#user_input").val().startsWith("/r")) {
 							var command = $("#user_input").val().toLowerCase().replace("/whisper", "").trim();
 							var commandArray = command.split(" ");
@@ -220,11 +209,9 @@
 							}
 							
 							whisper = whisper.trim();
-
 							$.post("backend/send_chat.php", {gameIndex:gameID, username:username, recipient:lastRecipient, chat:whisper}, function(data, status) {
 								$("#user_input").val("");
 							});
-
 						}
 					} else {
 						$.post("backend/send_chat.php", {gameIndex:gameID, username:username, recipient:"*", chat:$("#user_input").val()}, function(data, status) {
@@ -253,7 +240,6 @@
 					window.location.replace("index.html");
 				});
 			});
-
 			chatRefresher = setInterval(function() {
 				$.post("backend/refresh_chat.php", {gameIndex:gameID}, function(data, status) {
 					var chatObject = JSON.parse(data);
@@ -279,7 +265,6 @@
 					}
 				});
 			}, 500);
-
 			playerRefresher = setInterval(function() {
 				$.post("backend/refresh_players.php", {gameIndex:gameID}, function(data, status) {
 					playerObject = JSON.parse(data);
@@ -310,15 +295,15 @@
 				$(document).find("#players_list").text("Who else is here: ");
 				addedPlayers = [];
 			}
-
+			
 			function getInventory() {
 				inventoryObject = null;
 				$(document).find(".inventory_item").remove();
 				$.post("backend/get_inventory.php", {id:token, gameIndex:gameID}, function(data, status) {
 					inventoryObject = JSON.parse(data);
 					for(var i = 0; i < inventoryObject.inventory.length; i++) {
-						console.log(inventoryObject.inventory[i].name);
-						$(document).find("#inventory_list").append("<li class=\"inventory_item\"><img src=\"" + inventoryObject.inventory[i].image.replace("@","/") + "\" alt=\"" + inventoryObject.inventory[i].name + "\"/></li>");
+						
+						$(document).find("#inventory_list").append("<li class=\"inventory-item\"><img class=\"item-image\" width=\"10%\" height=\"10%\" src=\"" + inventoryObject.inventory[i].image.replace(/@/g,"\/") + "\" alt=\"" + inventoryObject.inventory[i].name + "\"/></li>");
 					}
 				});
 			}

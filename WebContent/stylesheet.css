@@ -188,4 +188,9 @@ button {
 }
 ::-webkit-scrollbar-thumb:hover {
     background: #1b1b1b;
-}   
+}
+
+.item-image {
+	width: 10px;
+	height: 10px;
+}
