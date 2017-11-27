@@ -29,13 +29,12 @@
 		</div>
 
 		<div id="inventory">
-			<ul>
+			<ul id="inventory_list">
 				<li class="inventory_item">Rock</li>
 			    <li class="inventory_item">Lithium</li>
 			    <li class="inventory_item">Glass Shard</li>
 			</ul>
 		</div>
-		<div id="inventory">INVENTORY</div>
 	</div>
 	
 	<input type=text id="user_input" placeholder="Enter a command. Type /help for help." autofocus></input>
@@ -324,7 +323,7 @@
 					inventoryObject = JSON.parse(data);
 					for(var i = 0; i < inventoryObject.inventory.length; i++) {
 						console.log(inventoryObject.inventory[i].name);
-						$(document).find("#inventory_list").append("<li class=\"inventory_item\"><img src=\"" + inventoryObject.inventory[i].image.replace("@","/") + "\" alt=\"" + inventoryObject.inventory[i].name + "\"/></li>");
+						$(document).find("#inventory_list").append("<li class=\"inventory_item\"><img src=\"" + inventoryObject.inventory[i].image.replace(/@/g,"/") + "\" alt=\"" + inventoryObject.inventory[i].name + "\"/></li>");
 					}
 				});
 			}
