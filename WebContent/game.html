@@ -35,6 +35,7 @@
 			    <li class="inventory_item">Glass Shard</li>
 			</ul>
 		</div>
+		<div id="inventory">INVENTORY</div>
 	</div>
 	
 	<input type=text id="user_input" placeholder="Enter a command. Type /help for help." autofocus></input>
@@ -43,7 +44,6 @@
 		//var token = localStorage.getItem("userToken");
 		//var gameID = localStorage.getItem("gameID");
 		//var username = localStorage.getItem("username");
-
 		var token = 20;
 		var gameID = 51;
 		var username = "Jacob_Pickens";
@@ -167,7 +167,7 @@
 								}
 							});
 						}
-
+						
 						// Search Script
 						if ($("#user_input").val().toLowerCase().startsWith("/search")) {
 							var sublocation = $("#user_input").val().replace("/search", "").trim();
@@ -316,7 +316,7 @@
 				$(document).find("#players_list").text("Who else is here: ");
 				addedPlayers = [];
 			}
-
+			
 			function getInventory() {
 				inventoryObject = null;
 				$(document).find(".inventory_item").remove();
