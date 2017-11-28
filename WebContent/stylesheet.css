@@ -191,16 +191,5 @@ button {
 }
 
 #inventory_list {
-	
-}
-
-.inventory_item {
-    display: inline;
-    width: 20%;
-    height: 20%;
-    border: 3px solid gray;
-    font-size: 10px;
-    text-align: center;
-    margin: 0px;
-    padding: 0px;
+	list-style-type: none;
 }

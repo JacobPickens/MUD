@@ -29,10 +29,8 @@
 		</div>
 
 		<div id="inventory">
+			INVENTORY<br/>
 			<ul id="inventory_list">
-				<li class="inventory_item">Rock</li>
-			    <li class="inventory_item">Lithium</li>
-			    <li class="inventory_item">Glass Shard</li>
 			</ul>
 		</div>
 	</div>
@@ -317,15 +315,15 @@
 			}
 			
 			function getInventory() {
-// 				inventoryObject = null;
-// 				$(document).find(".inventory_item").remove();
-// 				$.post("backend/get_inventory.php", {id:token, gameIndex:gameID}, function(data, status) {
-// 					inventoryObject = JSON.parse(data);
-// 					for(var i = 0; i < inventoryObject.inventory.length; i++) {
-// 						console.log(inventoryObject.inventory[i].name);
-// 						$(document).find("#inventory_list").append("<li class=\"inventory_item\"><img src=\"" + inventoryObject.inventory[i].image.replace(/@/g,"/") + "\" alt=\"" + inventoryObject.inventory[i].name + "\"/></li>");
-// 					}
-// 				});
+ 				inventoryObject = null;
+ 				$(document).find(".inventory_element").remove();
+ 				$.post("backend/get_inventory.php", {id:token, gameIndex:gameID}, function(data, status) {
+ 					inventoryObject = JSON.parse(data);
+ 					for(var i = 0; i < inventoryObject.inventory.length; i++) {
+ 						console.log(inventoryObject.inventory[i].name);
+ 						$(document).find("#inventory_list").append("<li class=\"inventory_element\" style=\"display: inline; margin: 0;\"><div class=\"inventory_item\" style=\"display: inline;\"><p style=\"display: inline; position: relative; left:7%; top: 5%;\">" + inventoryObject.inventory[i].name + "</p><img src=\"" + inventoryObject.inventory[i].image.replace(/@/g,"/") + "\" width=\"10%\" height=\"10%\" style=\"display: inline;\"/></div></li>");
+ 					}
+ 				});
 			}
 		});
 		
