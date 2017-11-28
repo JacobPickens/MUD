@@ -317,15 +317,15 @@
 			}
 			
 			function getInventory() {
-				inventoryObject = null;
-				$(document).find(".inventory_item").remove();
-				$.post("backend/get_inventory.php", {id:token, gameIndex:gameID}, function(data, status) {
-					inventoryObject = JSON.parse(data);
-					for(var i = 0; i < inventoryObject.inventory.length; i++) {
-						console.log(inventoryObject.inventory[i].name);
-						$(document).find("#inventory_list").append("<li class=\"inventory_item\"><img src=\"" + inventoryObject.inventory[i].image.replace(/@/g,"/") + "\" alt=\"" + inventoryObject.inventory[i].name + "\"/></li>");
-					}
-				});
+// 				inventoryObject = null;
+// 				$(document).find(".inventory_item").remove();
+// 				$.post("backend/get_inventory.php", {id:token, gameIndex:gameID}, function(data, status) {
+// 					inventoryObject = JSON.parse(data);
+// 					for(var i = 0; i < inventoryObject.inventory.length; i++) {
+// 						console.log(inventoryObject.inventory[i].name);
+// 						$(document).find("#inventory_list").append("<li class=\"inventory_item\"><img src=\"" + inventoryObject.inventory[i].image.replace(/@/g,"/") + "\" alt=\"" + inventoryObject.inventory[i].name + "\"/></li>");
+// 					}
+// 				});
 			}
 		});
 		
