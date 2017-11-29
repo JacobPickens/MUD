@@ -54,7 +54,16 @@ if(mysqli_num_rows($results) > 0) {
 						}
 					}
 					
-					if($exists) { // Stack item
+					$query = "SELECT * FROM items WHERE id=$itemId";
+					$results = mysqli_query($conn, $query);
+					
+					$stackable = true;
+					
+					while($row = mysqli_fetch_assoc($results)) {
+						$stackable = $row['stackable'];
+					}
+					
+					if($exists && $stackable) { // Stack item
 						$inventoryObject->inventory[$existsIndex]->amount += 1;
 						echo "You found a " . $inventoryObject->inventory[$existsIndex]->name . "!";
 						$newInventory = str_replace("\"", "\\\"", json_encode($inventoryObject));
