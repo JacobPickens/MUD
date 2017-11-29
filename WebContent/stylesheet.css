@@ -82,13 +82,15 @@ html {
 
 #inventory {
     width: 100%;
-    height: 17%;
+    height: 20%;
     border: 3px solid gray;
     color: gray;
     text-align: center;
     font-size: 40px;
     margin-top: 30px;
     float: down;
+    overflow-x: auto;
+    white-space: nowrap;
 }
 
 #user_input {
