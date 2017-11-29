@@ -321,7 +321,7 @@
  					inventoryObject = JSON.parse(data);
  					for(var i = 0; i < inventoryObject.inventory.length; i++) {
  						console.log(inventoryObject.inventory[i].name);
- 						$(document).find("#inventory_list").append("<li class=\"inventory_element\" style=\"display: inline; margin: 0;\"><div class=\"inventory_item\" style=\"display: inline;\"><p style=\"display: inline; position: relative; left:7%; top: 5%;\">" + inventoryObject.inventory[i].name + "</p><img src=\"" + inventoryObject.inventory[i].image.replace(/@/g,"/") + "\" width=\"10%\" height=\"10%\" style=\"display: inline;\"/></div></li>");
+ 						$(document).find("#inventory_list").append("<li class=\"inventory_element\" style=\"display: inline; margin: 0; margin-right: 2%;\"><div class=\"inventory_item\" style=\"display: inline;\" title=\"" + inventoryObject.inventory[i].name + "\"><img src=\"" + inventoryObject.inventory[i].image.replace(/@/g,"/") + "\" width=\"10%\" height=\"10%\" style=\"display: inline;\"/></div></li>");
  					}
  				});
 			}
