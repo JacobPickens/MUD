@@ -17,7 +17,7 @@ $location = $_POST['location'];
 $sublocation = $_POST['sublocation'];
 
 $query = "SELECT * FROM map$gameIndex WHERE id=$location";
-$results = mysqli_query($conn, $query) or die("Error: " . mysqli_error());
+$results = mysqli_query($conn, $query) or die("Error: " . mysqli_error($conn));
 
 if(mysqli_num_rows($results) > 0) {
 	$sublocationJSON = "";
@@ -42,36 +42,60 @@ if(mysqli_num_rows($results) > 0) {
 					
 					$inventoryObject = json_decode($inventoryJSON);
 					
-					// Generate Item
-					$query = "SELECT * FROM items WHERE id=1";
-					$results = mysqli_query($conn, $query) or die("Error: " . mysqli_error());
+					$itemId = rand(1, 2);
 					
-					$id = null;
-					$name = null;
-					$image = null;
-					while($row = mysqli_fetch_assoc($results)) {
-						$id = $row['id'];
-						$name = $row['name'];
-						$image = $row['image'];
+					$exists = false;
+					$existsIndex = 0;
+					for($i = 0; $i < sizeof($inventoryObject->inventory); $i++) {
+						if($itemId == $inventoryObject->inventory[$i]->id) {
+							$exists = true;
+							$existsIndex = $i;
+							break;
+						}
 					}
 					
-					if($id != null && $name != null && $image != null) {
-						$itemObject = new stdClass();
-						$itemObject->id = $id;
-						$itemObject->name = $name;
-						$itemObject->image = $image;
-						
-						array_push($inventoryObject->inventory, $itemObject);
+					if($exists) { // Stack item
+						$inventoryObject->inventory[$existsIndex]->amount += 1;
+						echo "You found a " . $inventoryObject->inventory[$existsIndex]->name . "!";
 						$newInventory = str_replace("\"", "\\\"", json_encode($inventoryObject));
 						
 						$query = "UPDATE game$gameIndex SET inventory=\"$newInventory\" WHERE id=$playerId";
 						if(!mysqli_query($conn, $query)) {
 							echo mysqli_error($conn);
 						}
+					} else { // Add item normally
+						// Generate Item
+						$query = "SELECT * FROM items WHERE id=$itemId";
+						$results = mysqli_query($conn, $query) or die("Error: " . mysqli_error());
+							
+						$id = null;
+						$name = null;
+						$image = null;
+						while($row = mysqli_fetch_assoc($results)) {
+							$id = $row['id'];
+							$name = $row['name'];
+							$image = $row['image'];
+						}
+							
+						if($id != null && $name != null && $image != null) {
+							$itemObject = new stdClass();
+							$itemObject->id = $id;
+							$itemObject->amount = 1;
+							$itemObject->name = $name;
+							$itemObject->image = $image;
 						
-						echo "You found a " . $name . "!";
-					} else {
-						echo 'invaliditem';
+							array_push($inventoryObject->inventory, $itemObject);
+							$newInventory = str_replace("\"", "\\\"", json_encode($inventoryObject));
+						
+							$query = "UPDATE game$gameIndex SET inventory=\"$newInventory\" WHERE id=$playerId";
+							if(!mysqli_query($conn, $query)) {
+								echo mysqli_error($conn);
+							}
+						
+							echo "You found a " . $name . "!";
+						} else {
+							echo 'invaliditem';
+						}
 					}
 				} else {
 					echo 'invalidplayer';
