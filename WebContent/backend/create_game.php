@@ -54,17 +54,6 @@ $query = 	"CREATE TABLE chat$currentGameIndex (" .
 			");";
 mysqli_query($gamesConn, $query);
 
-$query = 	"CREATE TABLE duel$currentGameIndex (" .
-			"id int NOT NULL AUTO_INCREMENT," .
-			"player1 int," .
-			"player2 int," .
-			"player1Cooldowns text," .
-			"player2Cooldowns text," .
-			"currentPlayer int," .
-			"PRIMARY KEY (id)" .
-			");";
-mysqli_query($gamesConn, $query);
-
 $query = 	"CREATE TABLE map$currentGameIndex (" .
 			"id int NOT NULL AUTO_INCREMENT," .
 			"type varchar(256)," .
