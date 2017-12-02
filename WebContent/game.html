@@ -46,7 +46,7 @@
 		//var gameID = localStorage.getItem("gameID");
 		//var username = localStorage.getItem("username");
 		var token = 8;
-		var gameID = 1;
+		var gameID = 14;
 		var username = "asdf";
 		var currentLocation = 1;
 
@@ -248,12 +248,7 @@
 											alert("That player is not in the same location as you.");
 											break;
 										default:
-											localStorage.setItem("userToken", token);
-											localStorage.setItem("gameID", gameID);
-											localStorage.setItem("username", username);
-											localStorage.setItem("duelID", data);
-											window.onbeforeunload = null;
-											window.location.replace("duel.html");
+											enterDuel(data);
 											break;
 										}
 									});
@@ -345,6 +340,9 @@
 					for (var k in playerObject.players) {
 						if (playerObject.players[k].id == token) {
 							currentLocation = playerObject.players[k].location;
+							if(currentLocation == 0) {
+								enterDuel(playerObject.players[k].duelId);
+							}
 						}
 						
 						if(playerObject.players[k].location == currentLocation && playerObject.players[k].id != token) {
@@ -396,6 +394,15 @@
 						}
 					}
 				}
+			}
+			
+			function enterDuel(duelId) {
+				localStorage.setItem("userToken", token);
+				localStorage.setItem("gameID", gameID);
+				localStorage.setItem("username", username);
+				localStorage.setItem("duelID", duelId);
+				window.onbeforeunload = null;
+				window.location.replace("duel.html");
 			}
 		});
 		

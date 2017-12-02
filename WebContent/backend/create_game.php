@@ -34,7 +34,7 @@ if(mysqli_num_rows($results) > 0) {
 }
 
 // Create game tables
-$query = "CREATE TABLE game$currentGameIndex (id bigint(20), username varchar(256), location int, inventory text, combatStats text);";
+$query = "CREATE TABLE game$currentGameIndex (id bigint(20), username varchar(256), location int, inventory text, combatStats text, duelId int);";
 if(!mysqli_query($gamesConn, $query)) {
 	echo "Error: " . mysqli_error($gamesConn);
 }
@@ -97,7 +97,7 @@ while($row = mysqli_fetch_assoc($results)) {
 	$hostUsername = $row['username'];
 }
 
-$query = "INSERT INTO game$currentGameIndex(id, username, location, inventory, combatStats) VALUES($hostID, \"$hostUsername\", 1, \"{\\\"inventory\\\":[]}\", \"{\\\"stats\\\":[]}\")";
+$query = "INSERT INTO game$currentGameIndex(id, username, location, inventory, combatStats, duelId) VALUES($hostID, \"$hostUsername\", 1, \"{\\\"inventory\\\":[]}\", \"{\\\"stats\\\":[\\\"health\\\":25]}\", 0)";
 if(!mysqli_query($gamesConn, $query)) {
 	echo mysqli_error($gamesConn);
 }

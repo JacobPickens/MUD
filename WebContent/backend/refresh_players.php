@@ -22,7 +22,8 @@ if(mysqli_num_rows($results) > 0) {
 		$id = $row['id'];
 		$username = $row['username'];
 		$location = $row['location'];
-		$json = $json . "{\"id\":$id, \"username\":\"$username\", \"location\":$location},";
+		$duelId = $row['duelId'];
+		$json = $json . "{\"id\":$id, \"username\":\"$username\", \"location\":$location, \"duelId\":$duelId},";
 	}
 	echo rtrim($json,',') . "]}";
 }
