@@ -5,6 +5,8 @@
 <link rel="stylesheet" type="text/css" href="stylesheet.css">
 <link rel="icon" href="favicon.ico" />
 <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+
+<audio id="notificationSound" src="notification.wav" autostart="true" type="audio/wav"></audio>
 </head>
 <body>
 
@@ -43,9 +45,9 @@
 		//var token = localStorage.getItem("userToken");
 		//var gameID = localStorage.getItem("gameID");
 		//var username = localStorage.getItem("username");
-		var token = 20;
-		var gameID = 51;
-		var username = "Jacob_Pickens";
+		var token = 8;
+		var gameID = 1;
+		var username = "asdf";
 		var currentLocation = 1;
 
 		var chatRefresher = null;
@@ -148,6 +150,8 @@
 		}
 		
 		$(document).ready(function() {
+			var notificationSound = document.getElementById("notificationSound");
+			
 			getInventory();
 			
 			drawRefresher = setInterval(function() { render(); }, 500);
@@ -272,10 +276,13 @@
 						if(!added) {
 							if((chatObject.chats[i].recipient == username.toLowerCase() || chatObject.chats[i].username == username) && chatObject.chats[i].recipient != "*") {
 								$("#chat_box").append("<i style=\"color: #cc00cc;\">" + chatObject.chats[i].username + ": " + chatObject.chats[i].chat +  "</i><br/>");
+								notificationSound.play();
 							} else if(chatObject.chats[i].username == username) {
 								$("#chat_box").append("<strong style=\"color: #bf2224;\">" + chatObject.chats[i].username + "</strong>: " + chatObject.chats[i].chat +  "<br/>");
+								checkForMention(chatObject.chats[i].chat);
 							} else if(chatObject.chats[i].recipient == "*") {
 								$("#chat_box").append("<strong>" + chatObject.chats[i].username + "</strong>: " + chatObject.chats[i].chat +  "<br/>");
+								checkForMention(chatObject.chats[i].chat);
 							}
 							var chatbox = document.getElementById("chat_box");
 							chatbox.scrollTop = chatbox.scrollHeight;
@@ -330,6 +337,19 @@
  						}
  					}
  				});
+			}
+
+			function checkForMention(chat) {
+				if(chat.includes("@")) {
+					var array1 = chat.split("@");
+					for(var i = 0; i < array1.length; i++) {
+						var array2 = array1[i].split(" ");
+						var mention = array2[0];
+						if(mention == username) {
+							notificationSound.play();
+						}
+					}
+				}
 			}
 		});
 		
