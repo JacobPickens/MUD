@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Duel</title>
+</head>
+<body>
+
+<div id="local_player">
+
+	<h2 id="local_username"></h2>
+	<p id="local_health">Health:</p>
+
+</div>
+
+<div id="opposing_player">
+
+	<h2 id="opponent_username"></h2>
+	<p id="opponent_health">Health:</p>
+
+</div>
+
+<script>
+
+var token = localStorage.getItem("userToken");
+var gameID = localStorage.getItem("gameID");
+var username = localStorage.getItem("username");
+var duelID = localStorage.getItem("duelID");
+
+</script>
+
+</body>
+</html>

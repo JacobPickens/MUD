@@ -248,7 +248,12 @@
 											alert("That player is not in the same location as you.");
 											break;
 										default:
-											alert("duel started");
+											localStorage.setItem("userToken", token);
+											localStorage.setItem("gameID", gameID);
+											localStorage.setItem("username", username);
+											localStorage.setItem("duelID", data);
+											window.onbeforeunload = null;
+											window.location.replace("duel.html");
 											break;
 										}
 									});

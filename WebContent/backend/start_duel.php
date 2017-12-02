@@ -43,6 +43,8 @@ if($attackingLocation == $victimLocation) {
 		die(mysqli_error($conn));
 	}
 	
+	echo mysqli_insert_id($conn);
+	
 	$query = "UPDATE game$gameIndex SET location=0 WHERE id=$attackingId";
 	if(!mysqli_query($conn, $query)) {
 		die(mysqli_error($conn));
