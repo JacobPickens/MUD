@@ -20,7 +20,12 @@ if(!mysqli_query($conn, $query)) {
 	die(mysqli_error($conn));
 }
 
-$query = "";
+$query = "UPDATE game$gameIndex SET location=0 WHERE id=$attackingId";
+if(!mysqli_query($conn, $query)) {
+	die(mysqli_error($conn));
+}
+
+$query = "UPDATE game$gameIndex SET location=0 WHERE id=$victimId";
 if(!mysqli_query($conn, $query)) {
 	die(mysqli_error($conn));
 }
