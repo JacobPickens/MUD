@@ -217,7 +217,48 @@
 								$("#user_input").val("");
 							});
 						}
-
+						
+						// Duel Script
+						if ($("#user_input").val().toLowerCase().startsWith("/duel")) {
+							var victimUsername = $("#user_input").val().replace("/duel", "").trim();
+							
+							if(victimUsername == username) {
+								alert("I know life is hard man, but it doesn't have to be like this.");
+							} else {
+								// Check to see if victim player is in the game
+								var playerExists = false;
+								var victimId = null;
+								for(var i = 0; i < playerObject.players.length; i++) {
+									if(playerObject.players[i].username == victimUsername) {
+										playerExists = true;
+										victimId = playerObject.players[i].id;
+										break;
+									}
+								}
+								
+								// AJAX
+								if(playerExists) {
+									console.log(victimId);
+									$.post("backend/start_duel.php", {attacker:token, victim:victimId, gameIndex:gameID}, function(data, status) {
+										switch(data) {
+										case "invalidgame":
+											alert("Game is invalid.");
+											break;
+										case "differentlocation":
+											alert("That player is not in the same location as you.");
+											break;
+										default:
+											alert("duel started");
+											break;
+										}
+									});
+								} else {
+									alert("This player doesn't exist.");
+								}
+							}							
+						}
+						
+						// R command
 						if ($("#user_input").val().startsWith("/r")) {
 							var command = $("#user_input").val().toLowerCase().replace("/whisper", "").trim();
 							var commandArray = command.split(" ");

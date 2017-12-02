@@ -11,23 +11,49 @@ if(!$conn) {
 	die("Connection failed: " + mysqli_connect_error());
 }
 
-$attackingId = $_GET['attacker'];
-$victimId = $_GET['victim'];
-$gameIndex = $_GET['gameIndex'];
+$attackingId = $_POST['attacker'];
+$victimId = $_POST['victim'];
+$gameIndex = $_POST['gameIndex'];
 
-$query = "INSERT INTO duel$gameIndex(player1, player2, player1Cooldowns, player2Cooldowns, currentPlayer) VALUES($attackingId, $victimId, \"{}\", \"{}\", 0)";
-if(!mysqli_query($conn, $query)) {
+// Check to see if the players are in the same location
+$query = "SELECT * FROM game$gameIndex";
+$results = mysqli_query($conn, $query);
+if(!$results) {
 	die(mysqli_error($conn));
 }
 
-$query = "UPDATE game$gameIndex SET location=0 WHERE id=$attackingId";
-if(!mysqli_query($conn, $query)) {
-	die(mysqli_error($conn));
+$attackingLocation = null;
+$victimLocation = null;
+
+if(mysqli_num_rows($results) > 0) {
+	while($row = mysqli_fetch_assoc($results)) {
+		if($row['id'] == $attackingId) {
+			$attackingLocation = $row['location'];
+		} else if($row['id'] == $victimId) {
+			$victimLocation = $row['location'];
+		}
+	}
+} else {
+	die('invalidgame');
 }
 
-$query = "UPDATE game$gameIndex SET location=0 WHERE id=$victimId";
-if(!mysqli_query($conn, $query)) {
-	die(mysqli_error($conn));
+if($attackingLocation == $victimLocation) {
+	$query = "INSERT INTO duel$gameIndex(player1, player2, player1Cooldowns, player2Cooldowns, currentPlayer) VALUES($attackingId, $victimId, \"{}\", \"{}\", 0)";
+	if(!mysqli_query($conn, $query)) {
+		die(mysqli_error($conn));
+	}
+	
+	$query = "UPDATE game$gameIndex SET location=0 WHERE id=$attackingId";
+	if(!mysqli_query($conn, $query)) {
+		die(mysqli_error($conn));
+	}
+	
+	$query = "UPDATE game$gameIndex SET location=0 WHERE id=$victimId";
+	if(!mysqli_query($conn, $query)) {
+		die(mysqli_error($conn));
+	}
+} else {
+	echo 'differentlocation';
 }
 
 mysqli_close($conn);
