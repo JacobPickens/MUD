@@ -47,7 +47,7 @@ if(mysqli_num_rows($results) > 0) {
 			
 			if(mysqli_num_rows($results) == 0) {
 				// Puts account into game table
-				$query = "INSERT INTO game$gameIndex(id, username, location) VALUES($playerId, \"$username\", 1)";
+				$query = "INSERT INTO game$gameIndex(id, username, location, inventory, combatStats) VALUES($playerId, \"$username\", 1, \"{\\\"inventory\\\":[]}\", \"{\\\"stats\\\":[]}\")";
 				mysqli_query($gamesConn, $query);
 				
 				// Get host id
