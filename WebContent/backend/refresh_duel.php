@@ -1,0 +1,86 @@
+<?php 
+
+$host = "localhost";
+$database = "id3595091_games";
+$user = "id3595091_games";
+$password = file_get_contents("res.txt");
+
+$conn = mysqli_connect($host, $user, $password, $database);
+
+if(!$conn) {
+	die("Connection failed: " + mysqli_connect_error());
+}
+
+$duelId = $_POST['duelId'];
+$gameIndex = $_POST['gameIndex'];
+
+$attackerId = null;
+$victimId = null;
+$currentPlayer = null;
+
+$query = "SELECT * FROM duel$gameIndex";
+$results = mysqli_query($conn, $query);
+
+if(!$results) {
+	die(mysqli_error($conn));
+}
+
+if(mysqli_num_rows($results) > 0) {
+	while($row = mysqli_fetch_assoc($results)) {
+		if($row['id'] == $duelId) {
+			$attackerId = $row['player1'];
+			$victimId = $row['player2'];
+			$currentPlayer = $row['currentPlayer'];
+		}
+	}
+}
+
+// Get player combat stats
+$duelObject = new stdClass();
+$duelObject->currentPlayer = $currentPlayer;
+$duelObject->player1 = new stdClass();
+$duelObject->player2 = new stdClass();
+
+$query = "SELECT * FROM game$gameIndex WHERE id=$attackerId";
+$results = mysqli_query($conn, $query);
+
+if(!$results) {
+	die(mysqli_error($conn));
+}
+
+$attackerUsername = null;
+$attackerStats = null;
+
+while($row = mysqli_fetch_assoc($results)) {
+	$attackerUsername = $row['username'];
+	$attackerStats = json_decode($row['combatStats']);
+}
+
+$duelObject->player1->id = $attackerId;
+$duelObject->player1->username = $attackerUsername;
+$duelObject->player1->health = $attackerStats->stats[0];
+
+$query = "SELECT * FROM game$gameIndex WHERE id=$victimId";
+$results = mysqli_query($conn, $query);
+
+if(!$results) {
+	die(mysqli_error($conn));
+}
+
+$victimUsername = null;
+$victimStats = null;
+
+while($row = mysqli_fetch_assoc($results)) {
+	$victimUsername = $row['username'];
+	$victimStats = json_decode($row['combatStats']);
+}
+
+$duelObject->player2->id = $victimId;
+$duelObject->player2->username = $victimUsername;
+$duelObject->player2->health = $victimStats->stats[0];
+
+echo json_encode($duelObject);
+
+mysqli_close($conn);
+
+?>

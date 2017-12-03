@@ -238,8 +238,7 @@
 								
 								// AJAX
 								if(playerExists) {
-									console.log(victimId);
-									$.post("backend/start_duel.php", {attacker:token, victim:victimId, gameIndex:gameID}, function(data, status) {
+									$.post("backend/start_duel.php", {attacker:token, victim:victimId, location:currentLocation, gameIndex:gameID}, function(data, status) {
 										switch(data) {
 										case "invalidgame":
 											alert("Game is invalid.");

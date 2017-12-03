@@ -13,6 +13,7 @@ if(!$conn) {
 
 $attackingId = $_POST['attacker'];
 $victimId = $_POST['victim'];
+$location = $_POST['location'];
 $gameIndex = $_POST['gameIndex'];
 
 // Check to see if the players are in the same location
@@ -38,7 +39,7 @@ if(mysqli_num_rows($results) > 0) {
 }
 
 if($attackingLocation == $victimLocation) {
-	$query = "INSERT INTO duel$gameIndex(player1, player2, player1Cooldowns, player2Cooldowns, currentPlayer) VALUES($attackingId, $victimId, \"{}\", \"{}\", 0)";
+	$query = "INSERT INTO duel$gameIndex(player1, player2, player1Cooldowns, player2Cooldowns, currentPlayer, location) VALUES($attackingId, $victimId, \"{}\", \"{}\", 0, $location)";
 	if(!mysqli_query($conn, $query)) {
 		die(mysqli_error($conn));
 	}

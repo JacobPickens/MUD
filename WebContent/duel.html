@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Duel</title>
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -20,6 +22,8 @@
 
 </div>
 
+<h1 id="current_turn"></h1>
+
 <script>
 
 var token = localStorage.getItem("userToken");
@@ -27,6 +31,43 @@ var gameID = localStorage.getItem("gameID");
 var username = localStorage.getItem("username");
 var duelID = localStorage.getItem("duelID");
 
+var duelObject = null;
+
+var currentPlayer = null;
+
+var duelRefresher = null;
+
+function refreshDuel() {
+	$.post("backend/refresh_duel.php", {duelId: duelID, gameIndex:gameID}, function(data, status) {
+		duelObject = JSON.parse(data);
+		
+		if(duelObject.currentPlayer == 0) {
+			currentPlayer = duelObject.player1.username;
+		} else {
+			currentPlayer = duelObject.player2.username;
+		}
+		
+		$(document).find("#current_turn").text("It is " + currentPlayer + "\'s turn.");
+		
+		if(duelObject.player1.id == token) { // Figure out which player is which
+			$(document).find("#local_health").text("Health: " + duelObject.player1.health);
+		
+			$(document).find("#opponent_username").text(duelObject.player2.username);
+			$(document).find("#opponent_health").text("Health: " + duelObject.player2.health);
+		} else if(duelObject.player2.id == token) {
+			$(document).find("#local_health").text("Health: " + duelObject.player2.health);
+			
+			$(document).find("#opponent_username").text(duelObject.player1.username);
+			$(document).find("#opponent_health").text("Health: " + duelObject.player1.health);
+		}
+	});
+}
+
+$(document).ready(function() {
+	$(document).find("#local_username").text(username);
+	
+	duelRefresh = setInterval(function() {refreshDuel();}, 500);
+});
 </script>
 
 </body>
