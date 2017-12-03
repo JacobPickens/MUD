@@ -1,8 +1,10 @@
 <?php 
 
 $host = "localhost";
-$database = "id3595091_games";
-$user = "id3595091_games";
+$accountsDatabase = "u142423238_acco";
+$gamesDatabase = "u142423238_games";
+$accountsUser = "u142423238_jake";
+$gamesUser = "u142423238_games";
 $password = file_get_contents("res.txt");
 
 $conn = mysqli_connect($host, $user, $password, $database);

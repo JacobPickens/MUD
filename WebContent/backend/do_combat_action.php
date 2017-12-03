@@ -1,8 +1,10 @@
 <?php 
 
 $host = "localhost";
-$database = "id3595091_games";
-$user = "id3595091_games";
+$accountsDatabase = "u142423238_acco";
+$gamesDatabase = "u142423238_games";
+$accountsUser = "u142423238_jake";
+$gamesUser = "u142423238_games";
 $password = file_get_contents("res.txt");
 
 $conn = mysqli_connect($host, $user, $password, $database);
@@ -50,7 +52,29 @@ if(mysqli_num_rows($results) > 0) {
 					$stats->stats[0] -= 5;
 					
 					if($stats->stats[0] <= 0) { // Player Died
-						echo 'gameover';
+						$query = "DELETE FROM game$gameIndex WHERE id=$player2Id";
+						mysqli_query($conn, $query);
+						
+						$query = "UPDATE duel$gameIndex SET alive=0 WHERE id=$duelId";
+						mysqli_query($conn, $query);
+						
+						$location = null;
+						
+						$query = "SELECT * FROM duel$gameIndex WHERE id=$duelId";
+						$results = mysqli_query($conn, $query);
+						
+						if(!$results) {
+							echo mysqli_error($conn);
+						}
+						
+						while($row = mysqli_fetch_assoc($results)) {
+							$location = json_decode($row['location']);
+						}
+						
+						$query = "UPDATE game$gameIndex SET location=$location WHERE id=$player1Id";
+						mysqli_query($conn, $query);
+						
+						echo 'win';
 					} else {
 						$newStats = str_replace("\"", "\\\"", json_encode($stats));
 							

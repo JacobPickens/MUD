@@ -1,10 +1,10 @@
 <?php 
 
 $host = "localhost";
-$accountsDatabase = "id3595091_accounts";
-$gamesDatabase = "id3595091_games";
-$accountsUser = "id3595091_accounts";
-$gamesUser = "id3595091_games";
+$accountsDatabase = "u142423238_acco";
+$gamesDatabase = "u142423238_games";
+$accountsUser = "u142423238_jake";
+$gamesUser = "u142423238_games";
 $password = file_get_contents("res.txt");
 
 $accountsConn = mysqli_connect($host, $accountsUser, $password, $accountsDatabase);
@@ -19,7 +19,7 @@ if(!$gamesConn) {
 	die("Connection failed: " + mysqli_connect_error());
 }
 
-$hostID = $_POST['hostID'];
+$hostID = $_GET['hostID'];
 
 // Get current gameIndex
 $query = "SELECT * FROM constants WHERE name=\"gameIndex\"";
