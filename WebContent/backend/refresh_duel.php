@@ -17,6 +17,7 @@ $gameIndex = $_POST['gameIndex'];
 $attackerId = null;
 $victimId = null;
 $currentPlayer = null;
+$alive = null;
 
 $query = "SELECT * FROM duel$gameIndex";
 $results = mysqli_query($conn, $query);
@@ -31,6 +32,7 @@ if(mysqli_num_rows($results) > 0) {
 			$attackerId = $row['player1'];
 			$victimId = $row['player2'];
 			$currentPlayer = $row['currentPlayer'];
+			$alive = $row['alive'];
 		}
 	}
 }
@@ -38,6 +40,7 @@ if(mysqli_num_rows($results) > 0) {
 // Get player combat stats
 $duelObject = new stdClass();
 $duelObject->currentPlayer = $currentPlayer;
+$duelObject->alive = $alive;
 $duelObject->player1 = new stdClass();
 $duelObject->player2 = new stdClass();
 

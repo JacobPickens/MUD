@@ -74,6 +74,7 @@ $query = 	"CREATE TABLE duel$currentGameIndex (" .
 			"player2Cooldowns text," .
 			"currentPlayer int," .
 			"location int," .
+			"alive int," .
 			"PRIMARY KEY (id)" .
 			");";
 if(!mysqli_query($gamesConn, $query)) {

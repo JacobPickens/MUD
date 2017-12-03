@@ -39,7 +39,7 @@ if(mysqli_num_rows($results) > 0) {
 }
 
 if($attackingLocation == $victimLocation) {
-	$query = "INSERT INTO duel$gameIndex(player1, player2, player1Cooldowns, player2Cooldowns, currentPlayer, location) VALUES($attackingId, $victimId, \"{}\", \"{}\", 0, $location)";
+	$query = "INSERT INTO duel$gameIndex(player1, player2, player1Cooldowns, player2Cooldowns, currentPlayer, location, alive) VALUES($attackingId, $victimId, \"{}\", \"{}\", 0, $location, 1)";
 	if(!mysqli_query($conn, $query)) {
 		die(mysqli_error($conn));
 	}
