@@ -7,7 +7,7 @@ $accountsUser = "u142423238_jake";
 $gamesUser = "u142423238_games";
 $password = file_get_contents("res.txt");
 
-$conn = mysqli_connect($host, $user, $password, $database);
+$conn = mysqli_connect($host, $gamesUser, $password, $gamesDatabase);
 
 if(!$conn) {
 	die("Connection failed: " + mysqli_connect_error());
@@ -20,6 +20,10 @@ $gameIndex = $_POST['index'];
 $query = "SELECT * FROM gameList WHERE gameId=$gameIndex";
 $results = mysqli_query($conn, $query);
 
+if(!$results) {
+	die("1" . mysqli_error($conn));
+}
+
 $status = null;
 
 while($row = mysqli_fetch_assoc($results)) {
@@ -31,15 +35,25 @@ if($status != 0) {
 	$query = "SELECT * FROM global$gameIndex WHERE name=\"host\"";
 	$results = mysqli_query($conn, $query);
 	
+	if(!$results) {
+		die("2" . mysqli_error($conn));
+	}
+	
 	$hostId = null;
 	
 	while($row = mysqli_fetch_assoc($results)) {
 		$hostId = $row['value'];
 	}
 	
+	echo $hostId;
+	
 	// Get host username
 	$query = "SELECT * FROM game$gameIndex WHERE id=$hostId";
 	$results = mysqli_query($conn, $query);
+	
+	if(!$results) {
+		die("3" . mysqli_error($conn));
+	}
 	
 	$hostUsername = null;
 	

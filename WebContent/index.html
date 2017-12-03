@@ -167,6 +167,7 @@
 			// Lobby State Code
 			$(document).find("#create-game-button").click(function() {
 				$.post("backend/create_game.php", {hostID:currentUserID}, function(data, status) {
+					console.log(data);
 					var info = JSON.parse(data);
 					currentGameID = info.gameIndex;
 					$("#pregame_state").find("#join-code-title").text(info.joinCode);
@@ -229,6 +230,7 @@
 			// Functions
 			function pregameRefresh() {
 				$.post("backend/refresh_pregame.php", {username:currentUsername, index:currentGameID}, function(data, status) {
+					console.log(data);
 					var info = JSON.parse(data);
 					if(data == "deleted") {
 						currentGameID = null;

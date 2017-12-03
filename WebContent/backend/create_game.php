@@ -19,7 +19,7 @@ if(!$gamesConn) {
 	die("Connection failed: " + mysqli_connect_error());
 }
 
-$hostID = $_GET['hostID'];
+$hostID = $_POST['hostID'];
 
 // Get current gameIndex
 $query = "SELECT * FROM constants WHERE name=\"gameIndex\"";
@@ -104,8 +104,15 @@ if(!mysqli_query($gamesConn, $query)) {
 	echo mysqli_error($gamesConn);
 }
 
-$query = "INSERT INTO global$currentGameIndex(name, value) VALUES(\"host\", $hostID); INSERT INTO global$currentGameIndex(name, value) VALUES(\"mapSize\", 3)";
-mysqli_query($gamesConn, $query);
+$query = "INSERT INTO global$currentGameIndex(name, value) VALUES(\"host\", $hostID)";
+if(!mysqli_query($gamesConn, $query)) {
+	echo mysqli_error($gamesConn);
+}
+
+$query = "INSERT INTO global$currentGameIndex(name, value) VALUES(\"mapSize\", 3)";
+if(!mysqli_query($gamesConn, $query)) {
+	echo mysqli_error($gamesConn);
+}
 
 // Incrememnt gameIndex
 $newGameIndex = $currentGameIndex + 1;

@@ -7,7 +7,7 @@ $accountsUser = "u142423238_jake";
 $gamesUser = "u142423238_games";
 $password = file_get_contents("res.txt");
 
-$conn = mysqli_connect($host, $user, $password, $database);
+$conn = mysqli_connect($host, $gamesUser, $password, $gamesDatabase);
 
 if(!$conn) {
 	die("Connection failed: " + mysqli_connect_error());
@@ -17,6 +17,10 @@ $gameIndex = $_POST['gameIndex'];
 
 $query = "SELECT * FROM game$gameIndex";
 $results = mysqli_query($conn, $query);
+
+if(!$results) {
+	echo mysqli_error($conn);
+}
 
 if(mysqli_num_rows($results) > 0) {
 	$json = "{\"players\":[";

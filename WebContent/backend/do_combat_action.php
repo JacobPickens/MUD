@@ -7,16 +7,16 @@ $accountsUser = "u142423238_jake";
 $gamesUser = "u142423238_games";
 $password = file_get_contents("res.txt");
 
-$conn = mysqli_connect($host, $user, $password, $database);
+$conn = mysqli_connect($host, $gamesUser, $password, $gamesDatabase);
 
 if(!$conn) {
 	die("Connection failed: " + mysqli_connect_error());
 }
 
-$actionId = $_GET['action'];
-$playerId = $_GET['id'];
-$duelId = $_GET['duelId'];
-$gameIndex = $_GET['gameIndex'];
+$actionId = $_POST['action'];
+$playerId = $_POST['id'];
+$duelId = $_POST['duelId'];
+$gameIndex = $_POST['gameIndex'];
 
 $query = "SELECT * FROM duel$gameIndex WHERE id=$duelId";
 $results = mysqli_query($conn, $query);
