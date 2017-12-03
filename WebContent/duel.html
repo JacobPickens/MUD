@@ -23,6 +23,7 @@
 </div>
 
 <h1 id="current_turn"></h1>
+<p id="time_left"></p>
 
 <div id="actions">
 	<button id="basic_attack">Basic Attack</button>
@@ -40,6 +41,7 @@ var duelObject = null;
 var currentPlayer = null;
 
 var duelRefresher = null;
+var turnTimer = null;
 
 var won = false;
 
@@ -57,8 +59,10 @@ function refreshDuel() {
 				
 				if(currentPlayer == username) {
 					$(document).find("#actions").show();
+					$(document).find("#time_left").show();
 				} else {
 					$(document).find("#actions").hide();
+					$(document).find("#time_left").hide();
 				}
 				
 				$(document).find("#current_turn").text("It is " + currentPlayer + "\'s turn.");
@@ -104,7 +108,7 @@ $(document).ready(function() {
 		});
 	});
 	
-	duelRefresh = setInterval(function() {refreshDuel();}, 500);
+	duelRefresh = setInterval(function() {refreshDuel();}, 1000);
 });
 </script>
 

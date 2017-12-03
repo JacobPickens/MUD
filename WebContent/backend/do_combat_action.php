@@ -39,6 +39,10 @@ if(mysqli_num_rows($results) > 0) {
 	if($currentTurn == 0) {
 		if($player1Id == $playerId) { // Player 1's turn
 			switch($actionId) {
+				case -1:
+					$query = "UPDATE duel$gameIndex SET currentPlayer=1 WHERE id=$duelId";
+					mysqli_query($conn, $query);
+					break;
 				case 0: // Basic Attack
 					$query = "SELECT * FROM game$gameIndex WHERE id=$player2Id";
 					$results = mysqli_query($conn, $query);
@@ -49,7 +53,7 @@ if(mysqli_num_rows($results) > 0) {
 						$stats = json_decode($row['combatStats']);
 					}
 					
-					$stats->stats[0] -= 5;
+					$stats->stats[0] -= rand(3, 5);
 					
 					if($stats->stats[0] <= 0) { // Player Died
 						$query = "DELETE FROM game$gameIndex WHERE id=$player2Id";
@@ -92,6 +96,10 @@ if(mysqli_num_rows($results) > 0) {
 	} else if($currentTurn == 1) { // Player 2's turn
 		if($player2Id == $playerId) {
 		switch($actionId) {
+				case -1:
+					$query = "UPDATE duel$gameIndex SET currentPlayer=0 WHERE id=$duelId";
+					mysqli_query($conn, $query);
+					break;
 				case 0: // Basic Attack
 					$query = "SELECT * FROM game$gameIndex WHERE id=$player1Id";
 					$results = mysqli_query($conn, $query);
@@ -102,7 +110,7 @@ if(mysqli_num_rows($results) > 0) {
 						$stats = json_decode($row['combatStats']);
 					}
 					
-					$stats->stats[0] -= 5;
+					$stats->stats[0] -= rand(3, 5);
 					
 					if($stats->stats[0] <= 0) { // Player Died
 						$query = "DELETE FROM game$gameIndex WHERE id=$player1Id";

@@ -45,8 +45,6 @@ if($status != 0) {
 		$hostId = $row['value'];
 	}
 	
-	echo $hostId;
-	
 	// Get host username
 	$query = "SELECT * FROM game$gameIndex WHERE id=$hostId";
 	$results = mysqli_query($conn, $query);
