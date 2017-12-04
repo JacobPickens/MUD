@@ -3,30 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <title>Duel</title>
-
+<link rel="stylesheet" type="text/css" href="stylesheet.css">
 <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 </head>
+
 <body>
 
-<div id="local_player">
+<div id="duel_content">
 
-	<h2 id="local_username"></h2>
-	<p id="local_health">Health:</p>
-
+<div id="opposing_player" class="player_stats">
+  <h2 id="opponent_username"></h2>
+  <p id="opponent_health">Health:</p>  
 </div>
 
-<div id="opposing_player">
-
-	<h2 id="opponent_username"></h2>
-	<p id="opponent_health">Health:</p>
-
+<div id="local_player" class="player_stats">
+  <h2 id="local_username"></h2>
+  <p id="local_health">Health:</p>
 </div>
 
 <h1 id="current_turn"></h1>
 <p id="time_left"></p>
 
+</div>
+
+
 <div id="actions">
-	<button id="basic_attack">Basic Attack</button>
+  <button id="basic_attack">Basic Attack</button>
 </div>
 
 <script>
