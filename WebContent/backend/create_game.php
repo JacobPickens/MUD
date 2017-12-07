@@ -99,7 +99,7 @@ while($row = mysqli_fetch_assoc($results)) {
 	$hostUsername = $row['username'];
 }
 
-$query = "INSERT INTO game$currentGameIndex(id, username, location, inventory, combatStats, duelId) VALUES($hostID, \"$hostUsername\", 1, \"{\\\"inventory\\\":[]}\", \"{\\\"stats\\\":[25]}\", 0)";
+$query = "INSERT INTO game$currentGameIndex(id, username, location, inventory, combatStats, duelId) VALUES($hostID, \"$hostUsername\", 1, \"{\\\"inventory\\\":[]}\", \"{\\\"stats\\\":[25, 5]}\", 0)";
 if(!mysqli_query($gamesConn, $query)) {
 	echo mysqli_error($gamesConn);
 }
