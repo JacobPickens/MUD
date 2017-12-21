@@ -53,7 +53,7 @@ if(mysqli_num_rows($results) > 0) {
 						$stats = json_decode($row['combatStats']);
 					}
 					
-					$stats->stats[0] -= rand(3, 5);
+					$stats->stats[0] -= $stats->stats[1];
 					
 					if($stats->stats[0] <= 0) { // Player Died
 						$query = "DELETE FROM game$gameIndex WHERE id=$player2Id";

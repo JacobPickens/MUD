@@ -64,6 +64,7 @@ while($row = mysqli_fetch_assoc($results)) {
 $duelObject->player1->id = $attackerId;
 $duelObject->player1->username = $attackerUsername;
 $duelObject->player1->health = $attackerStats->stats[0];
+$duelObject->player1->damage = $attackerStats->stats[1];
 
 $query = "SELECT * FROM game$gameIndex WHERE id=$victimId";
 $results = mysqli_query($conn, $query);
@@ -83,6 +84,7 @@ while($row = mysqli_fetch_assoc($results)) {
 $duelObject->player2->id = $victimId;
 $duelObject->player2->username = $victimUsername;
 $duelObject->player2->health = $victimStats->stats[0];
+$duelObject->player2->damage = $victimStats->stats[1];
 
 echo json_encode($duelObject);
 

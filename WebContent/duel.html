@@ -11,17 +11,25 @@
 
 <div id="duel_content">
 
-<div id="opposing_player" class="player_stats">
+<div id="opposing_player" class="player_stats" style="color: white">
   <h2 id="opponent_username"></h2>
-  <p id="opponent_health">Health:</p>  
+  <p id="opponent_health">Health:</p>
+  <p id="opponent_damage">Damage:</p> 
 </div>
 
-<div id="local_player" class="player_stats">
+<br/>
+<br/>
+
+<div id="local_player" class="player_stats" style="color: white">
   <h2 id="local_username"></h2>
   <p id="local_health">Health:</p>
+  <p id="local_damage">Damage:</p>
 </div>
 
-<h1 id="current_turn"></h1>
+<br/>
+<br/>
+
+<h1 id="current_turn" style="color: white"></h1>
 <p id="time_left"></p>
 
 </div>
@@ -71,14 +79,18 @@ function refreshDuel() {
 				
 				if(duelObject.player1.id == token) { // Figure out which player is which
 					$(document).find("#local_health").text("Health: " + duelObject.player1.health);
+					$(document).find("#local_damage").text("Damage: " + duelObject.player1.damage);
 				
 					$(document).find("#opponent_username").text(duelObject.player2.username);
 					$(document).find("#opponent_health").text("Health: " + duelObject.player2.health);
+					$(document).find("#opponent_damage").text("Damage: " + duelObject.player2.damage);
 				} else if(duelObject.player2.id == token) {
 					$(document).find("#local_health").text("Health: " + duelObject.player2.health);
+					$(document).find("#local_damage").text("Damage: " + duelObject.player2.damage);
 					
 					$(document).find("#opponent_username").text(duelObject.player1.username);
 					$(document).find("#opponent_health").text("Health: " + duelObject.player1.health);
+					$(document).find("#opponent_damage").text("Damage: " + duelObject.player1.damage);
 				}
 			} catch(err) {
 				alert("You died, bro.");

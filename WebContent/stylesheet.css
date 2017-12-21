@@ -215,6 +215,7 @@ button {
 }
 
 #duel_content {
+	color: white;
     background: #F5F5F5;
     height: 100%;
     padding-top: 10px;
@@ -235,4 +236,5 @@ button {
     padding-top: 0px !important;
     border: 0px !important;
     border-bottom: 0px !important;
+    color: white;
 }
